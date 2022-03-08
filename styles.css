@@ -6,6 +6,45 @@
 
 body {
     font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    display: flex;
+}
+
+form {
+    width: min(90%, 600px);
+    display: flex;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.185);
+    padding: 1.5rem;
+    margin: auto;
+    gap: 1rem;
+    height: 400px;
+    flex-direction: column;
+}
+
+form img {
+    width: 50%;
+    object-fit: cover;
+}
+
+form>div {
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+
+}
+
+.inputs {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.inputs>div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.5rem;
 }
 
 .container {
