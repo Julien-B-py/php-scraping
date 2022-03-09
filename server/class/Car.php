@@ -7,6 +7,7 @@ class Car
     public $price;
     public $goodDeal;
     public $location;
+    public $city;
     public $km;
     public $year;
     public $url;
