@@ -2,6 +2,7 @@
 
 // CORS
 header("Access-Control-Allow-Origin: *");
+// header("Access-Control-Allow-Headers: *");
 
 require __DIR__ . "/vendor/autoload.php";
 // Import Car class
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nbAnnonces = $crawler->filter(".numAnn")->text();
     $nbAnnonces = preg_replace("/[^0-9]/", "", $nbAnnonces);
     $nbAnnonces = intval($nbAnnonces);
-    
+
     // Extract data:
     // Target every single card item
     $crawler->filter('.searchCard__link')->each(function ($node) {
@@ -97,12 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Remove all \t \r \n
         $temp = trim(preg_replace('/\s\s+/', ' ', $locations[$loc]));
         $car->city = $temp;
-
     }
 
 
     echo json_encode(
-        ["nbAnnonces" => $nbAnnonces , "cars" => $cars]
+        ["nbAnnonces" => $nbAnnonces, "cars" => $cars]
 
     );
 }
