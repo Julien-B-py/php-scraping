@@ -1,6 +1,9 @@
 import axios from 'axios';
 import qs from 'qs';
 
+const LOCAL_DOMAIN = "http://localhost:8000";
+const ONLINE_DOMAIN = "https://young-waters-54181.herokuapp.com";
+
 export const getSales = async (userFormData) => {
     try {
 
@@ -8,7 +11,7 @@ export const getSales = async (userFormData) => {
 
         var config = {
             method: 'post',
-            url: 'http://localhost:8000/getSales.php',
+            url: `${ONLINE_DOMAIN}/getSales.php`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
