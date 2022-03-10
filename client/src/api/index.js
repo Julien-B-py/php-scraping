@@ -4,9 +4,7 @@ import qs from 'qs';
 export const getSales = async (userFormData) => {
     try {
 
-
         var dataToSend = qs.stringify(userFormData);
-
 
         var config = {
             method: 'post',
@@ -17,13 +15,12 @@ export const getSales = async (userFormData) => {
             data: dataToSend
         };
 
-
         const { data } = await axios(config);
         return data;
 
     } catch (error) {
 
-        console.log(error.message);
+        return error.message;
 
     }
 };

@@ -47,6 +47,10 @@ form>div {
   gap: 0.5rem;
 }
 
+.message {
+  text-align: center;
+}
+
 #root {
 
   margin: auto;
@@ -101,20 +105,20 @@ form>div {
 @media screen and (min-width: 768px) {
 
   #root {
-      width: 750px;
+    width: 750px;
   }
 
   .car {
-      flex-direction: row;
+    flex-direction: row;
   }
 
   .car img {
-      max-width: 50%;
-      object-fit: contain;
+    max-width: 50%;
+    object-fit: contain;
   }
 
   .right-part {
-      flex-grow: 1;
+    flex-grow: 1;
   }
 
 }

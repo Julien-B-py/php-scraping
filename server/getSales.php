@@ -2,7 +2,6 @@
 
 // CORS
 header("Access-Control-Allow-Origin: *");
-// header("Access-Control-Allow-Headers: *");
 
 require __DIR__ . "/vendor/autoload.php";
 // Import Car class
@@ -32,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $client->setServerParameter('HTTP_USER_AGENT', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0');
 
     $baseURL = "https://www.lacentrale.fr/listing";
-    // Optional parameters
+    // Optional user parameters
     $requestedBrand = $_POST['brand'];
     $requestedMinPrice = $_POST['minPrice'];
     $requestedMaxPrice = $_POST['maxPrice'];
@@ -71,38 +70,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         array_push($GLOBALS['cars'], $car);
     });
 
-
-
     // Import getLocations to display chief town close to département number
     include './utils/getLocations.php';
-    // Array containing all chief town in France
+    // Array containing all chief towns in France
     $locations = getLocations();
 
     // Loop through cars array
     foreach ($cars as &$car) {
-
-        // Determine which icon to display depending on how good the deal is
-        $dealIcon;
-        if (str_contains($car->goodDeal, 'marché')) {
-            $dealIcon = '<i class="fa-solid fa-thumbs-down" style="color:#D40000;"></i>';
-        } elseif (str_contains($car->goodDeal, 'indisponible')) {
-            $dealIcon = "";
-        } else {
-            $dealIcon = '<i class="fa-solid fa-thumbs-up" style="color:#00aa0e;"></i>';
-        }
 
         // Convert departement number to integer and remove 1 to use the value as index
         $loc = intval($car->location) - 1;
 
         // Get the corresponding chief town from locations array and add it to Car object
         // Remove all \t \r \n
-        $temp = trim(preg_replace('/\s\s+/', ' ', $locations[$loc]));
-        $car->city = $temp;
+        $city = trim(preg_replace('/\s\s+/', ' ', $locations[$loc]));
+        $car->city = $city;
     }
 
-
-    echo json_encode(
-        ["nbAnnonces" => $nbAnnonces, "cars" => $cars]
-
-    );
+    // Send collected data inside the response
+    echo json_encode(["nbAnnonces" => $nbAnnonces, "cars" => $cars]);
 }

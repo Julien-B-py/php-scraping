@@ -1,62 +1,100 @@
 
 import { useEffect, useState } from 'react';
 import { getSales } from './api';
-import carImg from './assets/car-img.jpg';
+import Car from "./components/Car";
+
+import cars from './assets/cars.jpg'
+
 import { brands } from './assets/brands';
 
 import './App.css';
 
 function App() {
 
+  // Error messages
+  const [error, setError] = useState("");
+  // User input values
   const [input, setInput] = useState({ brand: "", energy: "", minPrice: "", maxPrice: "", gearbox: "" });
+  // Loading
+  const [loading, setLoading] = useState(false);
+  // Hide or display user search form
   const [searchMode, setSearchMode] = useState(true);
+  // Store collected cars data
   const [sales, setSales] = useState(null);
 
   useEffect(() => {
 
     if (!searchMode) {
-      getSales(input).then((data) => setSales(data));
+
+      setLoading(true);
+
     }
 
   }, [searchMode])
 
 
 
+  useEffect(() => {
+
+    (error || sales) && setLoading(false);
+
+  }, [error, sales])
+
+
+  useEffect(() => {
+
+    loading && getSales(input).then((data) => {
+
+      if (typeof data === "string") {
+        setError(data);
+        return;
+      }
+
+      setSales(data);
+
+    });
+
+  }, [loading])
 
 
   // Handle and update user input values changes
   const handleChange = (e) => {
+
     const { name, value } = e.target;
+
     setInput((prevState) => {
+
       return { ...prevState, [name]: value };
+
     });
+
   };
 
 
   const handleSubmit = (event) => {
+
     event.preventDefault();
     setSearchMode(false);
-  }
 
+  }
 
   return (
     <>
-
       {searchMode && <form>
 
         <h2>Rechercher un véhicule d'occasion</h2>
 
         <div>
-          <img src="./cars.jpg" alt="" />
+          <img src={cars} alt="cars" />
 
           <div className="inputs">
 
             <div>
 
               <select name="brand" id="brand" onChange={handleChange} value={input.brand}>
+
                 <option value="">-- Marque --</option>
                 {brands.map((brand, index) => <option key={index} value={brand}>{brand}</option>)}
-
 
               </select>
 
@@ -89,27 +127,12 @@ function App() {
 
       </form>}
 
+      {!searchMode && sales?.cars.map((car, index) => <Car key={index} car={car} />)}
 
+      {error && <div className="message">{error}</div>}
 
-
-      {!searchMode && sales?.cars.map((car, index) => <div className='car' key={index}>
-        <img src={carImg} />
-
-        <div className='right-part'>
-          <div>
-            <h2>{car.model}</h2>
-            <h3>{car.version}</h3>
-            <div>{car.price}</div>
-            <div>{car.goodDeal}</div>
-            <div><i className='fa-solid fa-location-dot'></i> {car.location} - {car.city}</div>
-            <div>{car.year}</div>
-            <div>{car.km}</div>
-          </div>
-          <a href={car.url}><button>Voir l'annonce</button></a>
-        </div>
-
-      </div>)}
-
+      {loading && <div className="message">Chargement ...</div>}
+      
     </>
   );
 }

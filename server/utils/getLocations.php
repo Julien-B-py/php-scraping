@@ -4,7 +4,7 @@
 function getLocations()
 {
     // Open file as array
-    $array = file("./departments.txt");
+    $array = file("./assets/departments.txt");
     // Create new empty array
     $final = array();
 
