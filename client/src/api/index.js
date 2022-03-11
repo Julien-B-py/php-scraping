@@ -11,7 +11,7 @@ export const getSales = async (userFormData) => {
 
         var config = {
             method: 'post',
-            url: `${ONLINE_DOMAIN}/getSales.php`,
+            url: `${LOCAL_DOMAIN}/getSales.php`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
