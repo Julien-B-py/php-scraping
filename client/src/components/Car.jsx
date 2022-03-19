@@ -21,11 +21,11 @@ const Car = ({ car }) => {
             <div>
                 <h2>{car.model}</h2>
                 <h3>{car.version}</h3>
-                <div>{car.price}</div>
+                <div>{car.price} €</div>
                 <div>{getDealIcon()} {car.goodDeal}</div>
                 <div><i className='fa-solid fa-location-dot'></i> {car.location} - {car.city}</div>
                 <div>{car.year}</div>
-                <div>{car.km}</div>
+                <div>{car.km} km</div>
             </div>
             <a href={car.url}><button>Voir l'annonce</button></a>
         </div>

@@ -6,6 +6,9 @@ require_once './class/Car.php';
 // Import getLocations to display chief town close to département number
 include './utils/getLocations.php';
 
+// Import DB class
+require_once './database.php';
+
 // Create a Goutte Client instance
 use Goutte\Client;
 use Symfony\Component\HttpClient\HttpClient;
@@ -59,12 +62,24 @@ class LaCentrale
         $this->crawler->filter('.searchCard__link')->each(function ($node) {
             // For each card collect model, version, price, location etc...
             $model = $node->filter('.searchCard__makeModel')->text();
+
             $version = $node->filter('.searchCard__version')->text();
+            // Remove ' characters to avoid db errors
+            $version = str_replace("'", " ", $version);
+
+
             $price = $node->filter('.searchCard__fieldPrice')->text();
+            $price = intval(preg_replace("/[^0-9]/", "", $price));
+
             $goodDeal = $node->filter('.goodDeal-label')->text();
             $location = $node->filter('.searchCard__dptCont')->text();
+
+
+
             $km = $node->filter('.searchCard__mileage')->text();
-            $year = $node->filter('.searchCard__year')->text();
+            $km = intval(preg_replace("/[^0-9]/", "", $km));
+
+            $year = intval($node->filter('.searchCard__year')->text());
             // Collect ad direct link
             $url = "https://www.lacentrale.fr{$node->attr('href')}";
 
@@ -76,13 +91,18 @@ class LaCentrale
 
         // Collect listings qty
         $this->nbAnnonces = $this->crawler->filter(".numAnn")->text();
-        // Clear string
+        // Clear string from data that do not consist of digits with nothing.
         $this->nbAnnonces = preg_replace("/[^0-9]/", "", $this->nbAnnonces);
         // Turn string into an int
         $this->nbAnnonces = intval($this->nbAnnonces);
 
         // Array containing all chief towns in France
         $locations = getLocations();
+
+        // Initialize DB, create it and create table
+        $db = new DB();
+        $db->createDatabaseIfNotExists("cars_sales");
+        $db->createTableIfNotExists("cars");
 
         // Loop through cars array
         foreach ($this->carsList as &$car) {
@@ -94,7 +114,16 @@ class LaCentrale
             // Remove all \t \r \n
             $city = trim(preg_replace('/\s\s+/', ' ', $locations[$loc]));
             $car->city = $city;
+
+            // Add to DB every single entry if not already existing
+            if (!$db->entryExists($car->url)) {
+                $db->createEntry($car->model, $car->version, $car->price, $car->goodDeal, $car->location, $car->city, $car->km, $car->year, $car->url);
+            }
         }
+
+
+
+
 
         // Return collected data as JSON
         return json_encode(["nbAnnonces" => $this->nbAnnonces, "cars" => $this->carsList]);
